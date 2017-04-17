@@ -3,5 +3,7 @@ class PorkerhandsController < ApplicationController
   end
   def check
     @result = params[:card]
+    render 'index'
   end
+
 end

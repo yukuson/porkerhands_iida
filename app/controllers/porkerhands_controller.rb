@@ -1,4 +1,5 @@
 class PorkerhandsController < ApplicationController
+  include Common
   def index
   end
   def check
@@ -44,7 +45,7 @@ class PorkerhandsController < ApplicationController
     numbers = randnumbers.map(&:to_i).sort
 
     pokerrank = ["ハイカード","ワンペア","ツーペア","３カード","ストレート","フラッシュ","フルハウス","４カード","ストレートフラッシュ"]
-
+=begin
     if numbers.uniq.size == 2
       if numbers[0] == numbers[3] || numbers[1] == numbers[4]
         handrank = 7
@@ -70,8 +71,8 @@ class PorkerhandsController < ApplicationController
         handrank = 0
       end
     end
-
-    @result = "#{pokerrank[handrank]}"
+=end
+    @result = "#{pokerrank[rankjudge(numbers,suits)]}"
 
     #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑役判定↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 

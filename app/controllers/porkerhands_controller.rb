@@ -48,74 +48,45 @@ class PorkerhandsController < ApplicationController
 
     #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑エラー判定↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 
+    #↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓役判定↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↑↑↑
 
-    #空のsuits,numbersyetsort配列の用意
     suits = []
-    numbersyetsort = []
-
-    #cardsの全要素について,１文字目をsuits配列に、２〜３文字目をnumbersyetsort配列に追加
+    randnumbers = []
     cards.each do |k|
       suits.push k[0]
-      numbersyetsort.push k[1,2]
+      randnumbers.push k[1,2]
     end
+    numbers = randnumbers.map(&:to_i).sort
 
-    #numbersyetsort配列をint型に変換し、数字順にソート
-    numbers = numbersyetsort.map(&:to_i).sort
+    pokerrank = ["ハイカード","ワンペア","ツーペア","３カード","ストレート","フラッシュ","フルハウス","４カード","ストレートフラッシュ"]
 
-    p suits
-    p numbersyetsort
-    p numbers
-
-
-    #↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓役判定↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓
-
-
-    #フラッシュ系判定（suits配列の重複なしの大きさが１）
-    if suits.uniq.size == 1
-      p "手札のスートが１種類"
-      if (numbers.max-numbers.min == 4 ||numbers == [1,10,11,12,13])
-        p "手札のスートが１種類かつ手札の最大値と最小値の差分が４、または数値が１、１０、１１、１２、１３"
-        @result =  "ストレートフラッシュ"
+    if numbers.uniq.size == 2
+      if numbers[0] == numbers[3] || numbers[1] == numbers[4]
+        handrank = 7
       else
-        @result  = "フラッシュ"
+        handrank = 6
       end
-
-      #４カード・フルハウスの判定（numbers配列の重複なしの大きさが２）
-    elsif numbers.uniq.size == 2 &&
-      (numbers[0] != numbers[1] || numbers[3] != numbers[4])
-      p '手札の数字が２種類かつ同じ数字４枚'
-      @result  = "フォー・オブ・ア・カインド"
-
-    elsif numbers.uniq.size == 2
-      p '手札の数字が２種類'
-      @result  = "フルハウス"
-
-      #ストレート判定
-    elsif numbers.uniq.size == 5 &&
-      (numbers.max-numbers.min == 4 || numbers == [1,10,11,12,13])
-      p '手札の最大値と最小値の差分が４、または数値が１、１０、１１、１２、１３'
-      @result  =  "ストレート"
-
-      #３カード・２ペアの判定（numbers配列の重複なしの大きさが３）
-    elsif numbers.uniq.size == 3 &&
-      (numbers[0] == numbers[2] || numbers[1] == numbers[3] || numbers[2] == numbers[4] )
-      p '手札の数字が３種類かつ同じ数字３枚'
-      @result  = "スリー・オブ・ア・カインド"
-
     elsif numbers.uniq.size == 3
-      p '手札の数字が３種類'
-      @result  =  "ツーペア"
-
-      #１ペアの判定（numbers配列の重複なしの大きさが４）
+      if numbers[0] == numbers[2] || numbers[1] == numbers[3] || numbers[2] == numbers[4]
+        handlank = 3
+      else
+        handrank = 2
+      end
     elsif numbers.uniq.size == 4
-      p '手札の数字が４種類'
-      @result  = "ワンペア"
-
-      #残りはブタ
-    else
-      p 'どの条件にも当てはまらない'
-      @result  =  "ハイカード"
+      handrank = 1
+    elsif numbers.uniq.size == 5
+      if suits.uniq.size == 1 && (numbers[4] - numbers[0] == 4 ||numbers == [1,10,11,12,13])
+        handrank = 8
+      elsif suits.uniq.size == 1
+        handrank = 5
+      elsif numbers[4] - numbers[0] == 4 || numbers == [1,10,11,12,13]
+        handrank = 4
+      else
+        handrank = 0
+      end
     end
+
+    @result = "#{pokerrank[handrank]}"
 
     #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑役判定↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
 

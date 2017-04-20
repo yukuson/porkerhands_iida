@@ -32,51 +32,10 @@ class PorkerhandsController < ApplicationController
       end
     end
 
-    #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑エラー判定↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
     #↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓役判定↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↓↑↑↑
 
-    suits = []
-    randnumbers = []
-    cards.each do |k|
-      suits.push k[0]
-      randnumbers.push k[1,2]
-    end
-    numbers = randnumbers.map(&:to_i).sort
-
-    pokerrank = ["ハイカード","ワンペア","ツーペア","３カード","ストレート","フラッシュ","フルハウス","４カード","ストレートフラッシュ"]
-=begin
-    if numbers.uniq.size == 2
-      if numbers[0] == numbers[3] || numbers[1] == numbers[4]
-        handrank = 7
-      else
-        handrank = 6
-      end
-    elsif numbers.uniq.size == 3
-      if numbers[0] == numbers[2] || numbers[1] == numbers[3] || numbers[2] == numbers[4]
-        handrank = 3
-      else
-        handrank = 2
-      end
-    elsif numbers.uniq.size == 4
-      handrank = 1
-    elsif numbers.uniq.size == 5
-      if suits.uniq.size == 1 && (numbers[4] - numbers[0] == 4 ||numbers == [1,10,11,12,13])
-        handrank = 8
-      elsif suits.uniq.size == 1
-        handrank = 5
-      elsif numbers[4] - numbers[0] == 4 || numbers == [1,10,11,12,13]
-        handrank = 4
-      else
-        handrank = 0
-      end
-    end
-=end
-    @result = "#{pokerrank[rankjudge(numbers,suits)]}"
-
-    #↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑役判定↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑↑
-
-    render :action => "index"  and return
+    @result = "#{ranknamejudge(rankjudge(cards))}"
+    render :action => "index"
   end
 end
 
